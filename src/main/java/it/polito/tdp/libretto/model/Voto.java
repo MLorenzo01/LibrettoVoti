@@ -28,6 +28,20 @@ public class Voto {
 	public void setDataEsame(LocalDate dataEsame) {
 		this.dataEsame = dataEsame;
 	}
+	public boolean isDuplicato(Voto altro){
+		if(this.corso.equals(altro.getCorso()) && this.punti == altro.getPunti())
+			return true;
+	return false;
+	
+	}
+	public boolean isConflitto(Voto altro){
+		if(this.corso.equals(altro.getCorso()) && this.punti != altro.getPunti())
+			return true;
+	return false;
+	}
+	public Voto clone() {
+		return new Voto(this.corso, this.punti, this.dataEsame);
+	}
 	@Override
 	public String toString() {
 		return corso + " (" + punti + " pt) il " + dataEsame;

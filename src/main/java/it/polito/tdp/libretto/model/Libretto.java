@@ -17,7 +17,12 @@ public class Libretto {
 	 * @return true
 	 */
 	public boolean add(Voto v) {
-		return voti.add(v); //delega cieca, senza controlli
+		if(v.isConflitto(v) || v.isDuplicato(v)) {
+			// non aggiungi voto
+			System.out.println("Voto errato");
+			throw new IllegalArgumentException("Voto errato: " + v);
+		}
+		return voti.add(v);
 		
 	}
 	/*public void add(String corso, int punti, LocalDate data) {
@@ -52,18 +57,54 @@ public class Libretto {
 		//throw new RuntimeException("Voto non trovato");
 		// non conviene usare l'eccezione per un valore non trovato ma conviene usarla per cose più importanti
 	}
-	public boolean esisteVoto(Voto nuovo) {
+	/*public boolean esisteVotoDuplicato(Voto nuovo) {
 		for(Voto v: this.voti) {
 			//if(v.equalsCorsoPunti(nuovo)) si crea un metodo nell'altra classe solo nel caso in cui io uso questo 
 			//if in almeno 2 parti (refattorizzazione se faccio questa cosa in un secondo momento)
 			
 			if(v.getCorso().equals(nuovo.getCorso()) && v.getPunti() == nuovo.getPunti())
-			{
-				return true;
-			}
+			return true;
 		}
 		return false;
-	}
+	}*/
 	
+	/*public boolean esisteVotoConflitto(Voto nuovo) {
+		for(Voto v: this.voti) {
+			//if(v.equalsCorsoPunti(nuovo)) si crea un metodo nell'altra classe solo nel caso in cui io uso questo 
+			//if in almeno 2 parti (refattorizzazione se faccio questa cosa in un secondo momento)
+			
+			if(v.getCorso().equals(nuovo.getCorso()) && v.getPunti() != nuovo.getPunti())
+				return true;
+		}
+		return false;
+	}*/
+	
+	
+	
+	/*
+	 * Metodo 'factory' per creare un nuovo libretto con i voti migliorati
+	 * @return 
+	 */
+	public Libretto librettoMigliorato() {
+		Libretto migliore = new Libretto();
+		migliore.voti = new ArrayList<>();
+		for(Voto v: this.voti) {
+			migliore.voti.add(v.clone());
+		}
+		for(Voto v: migliore.voti) {
+			v.setPunti(v.getPunti()+2);
+		}
+		return migliore;
+	}
+	public void cancellaVotiInferiori(int punti) {
+		for(Voto v: this.voti) {
+			if(v.getPunti() < punti) {
+				this.voti.remove(v);
+			}
+		}/*
+		for(int i= 0; i<this.voti.size(); i++) {
+			if(this.voti.get(i).getPunti()<punti)
+		}*/
+	}
 
 }
