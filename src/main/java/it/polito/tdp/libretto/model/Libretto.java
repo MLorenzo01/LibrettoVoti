@@ -1,6 +1,8 @@
 package it.polito.tdp.libretto.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Libretto {
@@ -17,9 +19,7 @@ public class Libretto {
 	 * @return true
 	 */
 	public boolean add(Voto v) {
-		if(v.isConflitto(v) || v.isDuplicato(v)) {
-			// non aggiungi voto
-			System.out.println("Voto errato");
+		if(esisteVotoConflitto(v) || esisteVotoDuplicato(v)) {
 			throw new IllegalArgumentException("Voto errato: " + v);
 		}
 		return voti.add(v);
@@ -35,6 +35,14 @@ public class Libretto {
 		for(Voto v: this.voti) {
 			System.out.println(v);
 		}
+	}
+	
+	public String toString() {
+		String txt = "";
+		for(Voto v: this.voti) {
+			txt = txt +v.toString()+ "\n";
+		}
+		return txt;
 	}
 	public List<Voto> getVoti(){
 		return this.voti;
@@ -57,32 +65,28 @@ public class Libretto {
 		//throw new RuntimeException("Voto non trovato");
 		// non conviene usare l'eccezione per un valore non trovato ma conviene usarla per cose più importanti
 	}
-	/*public boolean esisteVotoDuplicato(Voto nuovo) {
+	public boolean esisteVotoDuplicato(Voto nuovo) {
 		for(Voto v: this.voti) {
-			//if(v.equalsCorsoPunti(nuovo)) si crea un metodo nell'altra classe solo nel caso in cui io uso questo 
-			//if in almeno 2 parti (refattorizzazione se faccio questa cosa in un secondo momento)
-			
-			if(v.getCorso().equals(nuovo.getCorso()) && v.getPunti() == nuovo.getPunti())
-			return true;
-		}
-		return false;
-	}*/
-	
-	/*public boolean esisteVotoConflitto(Voto nuovo) {
-		for(Voto v: this.voti) {
-			//if(v.equalsCorsoPunti(nuovo)) si crea un metodo nell'altra classe solo nel caso in cui io uso questo 
-			//if in almeno 2 parti (refattorizzazione se faccio questa cosa in un secondo momento)
-			
-			if(v.getCorso().equals(nuovo.getCorso()) && v.getPunti() != nuovo.getPunti())
+
+			if(v.isDuplicato(nuovo))
 				return true;
 		}
 		return false;
-	}*/
+	}
+	
+	public boolean esisteVotoConflitto(Voto nuovo) {
+		for(Voto v: this.voti) {
+
+			if(v.isConflitto(nuovo))
+				return true;
+		}
+		return false;
+	}
 	
 	
 	
-	/*
-	 * Metodo 'factory' per creare un nuovo libretto con i voti migliorati
+	/**
+	 * Metodo 'factory' per creare un nuovo libretto con i voti migliorati.
 	 * @return 
 	 */
 	public Libretto librettoMigliorato() {
@@ -90,6 +94,7 @@ public class Libretto {
 		migliore.voti = new ArrayList<>();
 		for(Voto v: this.voti) {
 			migliore.voti.add(v.clone());
+			//migliore.voti.add(new Voto(v));
 		}
 		for(Voto v: migliore.voti) {
 			v.setPunti(v.getPunti()+2);
@@ -97,14 +102,35 @@ public class Libretto {
 		return migliore;
 	}
 	public void cancellaVotiInferiori(int punti) {
-		for(Voto v: this.voti) {
-			if(v.getPunti() < punti) {
+		for(Voto v: this.voti) {				// non è consigliato, perchè quando ne cancello 1
+			if(v.getPunti() < punti) {			// gli altri si spostano di una posizione e salta quello dopo
 				this.voti.remove(v);
 			}
-		}/*
-		for(int i= 0; i<this.voti.size(); i++) {
-			if(this.voti.get(i).getPunti()<punti)
+		}
+		/*for(int i=0; i<this.voti.size(); i++) {      //non si modifica la lista su cui
+			if(this.voti.get(i).getPunti()<punti) {	   // si sta iterando MAI
+				this.voti.remove(i);
+			}
 		}*/
 	}
+	public Libretto librettoOrdinatoAlfabeticamente() {
+		Libretto ordinato = new Libretto();
+		ordinato.voti = new ArrayList<>(this.voti);
+		ordinato.voti.sort(new ComparatorByName());
+		//Collections.sort(ordinato.voti, new ComparatorByName());
+		return ordinato;
+	}
+	public Libretto librettoOrdinatoPerVoto() {
+		Libretto ordinato = new Libretto();
+		ordinato.voti = new ArrayList<>(this.voti);
+		
+		ordinato.voti.sort(new Comparator<Voto>() {
 
+			@Override
+			public int compare(Voto o1, Voto o2) {
+				return o2.getPunti()-o1.getPunti();
+			}});
+		
+		return ordinato;
+	}
 }

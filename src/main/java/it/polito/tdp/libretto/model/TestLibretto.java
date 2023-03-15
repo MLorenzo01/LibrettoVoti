@@ -29,14 +29,20 @@ public class TestLibretto {
 			lib.add(new Voto("Informatica", 25, LocalDate.of(2023, 7 ,10)));
 		} catch(IllegalArgumentException e) {
 			System.out.println("Errore nell'inserimento del voto");
-			
+			System.out.println(e.getMessage());
 		}
 		Libretto migliore = lib.librettoMigliorato();
 		System.out.println("Libretto migliorato");
 		migliore.stampa();
 		System.out.println("Libretto originario");
-
-
+		lib.stampa();
+		//lib.cancellaVotiInferiori(24);
+		//System.out.println("Libretto con voti maggiori di 24");
+		//lib.stampa();
+		System.out.println("Libretto ordinato alfabeticamente");
+		lib.librettoOrdinatoAlfabeticamente().stampa();
+		System.out.println("Libretto ordinato per voto");
+		lib.librettoOrdinatoPerVoto().stampa();
 	}
 
 }

@@ -7,6 +7,12 @@ public class Voto {
 		this.punti = punti;
 		this.dataEsame = dataEsame;
 	}
+	/* copy constructor di Voto
+	public Voto(Voto v) {
+		this.corso = corso;
+		this.punti = punti;
+		this.dataEsame = dataEsame;
+	}*/
 	public String corso;
 	private int punti; // da 18 a 31
 	private LocalDate dataEsame;
@@ -29,15 +35,12 @@ public class Voto {
 		this.dataEsame = dataEsame;
 	}
 	public boolean isDuplicato(Voto altro){
-		if(this.corso.equals(altro.getCorso()) && this.punti == altro.getPunti())
-			return true;
-	return false;
+		return this.corso.equals(altro.getCorso()) && this.punti == altro.getPunti();
 	
 	}
 	public boolean isConflitto(Voto altro){
-		if(this.corso.equals(altro.getCorso()) && this.punti != altro.getPunti())
-			return true;
-	return false;
+		return this.corso.equals(altro.getCorso()) && this.punti != altro.getPunti();
+
 	}
 	public Voto clone() {
 		return new Voto(this.corso, this.punti, this.dataEsame);
