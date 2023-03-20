@@ -41,6 +41,8 @@ public class Controller {
 
 	public void setModel(Libretto model) {
 		this.model = model;
+		txtResults.setText(this.model.toString());
+
 	}
 	@FXML
     void handleInserisci(ActionEvent event) {

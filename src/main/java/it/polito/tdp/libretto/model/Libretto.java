@@ -5,12 +5,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import it.polito.tdp.libretto.db.VotoDAO;
+
 public class Libretto {
 	private List<Voto> voti;
 
 	
 	public Libretto() {
-		this.voti = new ArrayList<Voto>();
+		VotoDAO dao = new VotoDAO();
+		this.voti = dao.listVoti();
 	}
 	/**
 	 * Aggiungi un nuovo voto al libretto
@@ -22,6 +25,8 @@ public class Libretto {
 		if(esisteVotoConflitto(v) || esisteVotoDuplicato(v)) {
 			throw new IllegalArgumentException("Voto errato: " + v);
 		}
+		VotoDAO dao = new VotoDAO();
+		dao.createVoto(v);
 		return voti.add(v);
 		
 	}
@@ -101,7 +106,7 @@ public class Libretto {
 		}
 		return migliore;
 	}
-	public void cancellaVotiInferiori(int punti) {
+	/*public void cancellaVotiInferiori(int punti) {
 		for(Voto v: this.voti) {				// non è consigliato, perchè quando ne cancello 1
 			if(v.getPunti() < punti) {			// gli altri si spostano di una posizione e salta quello dopo
 				this.voti.remove(v);
@@ -112,7 +117,19 @@ public class Libretto {
 				this.voti.remove(i);
 			}
 		}*/
+	public void cancellaVotiInferiori(int punti) {
+		List<Voto> daCanc = new ArrayList<Voto>();
+		for(Voto k: voti) {
+			if(k.getPunti() < punti) {
+				daCanc.add(k);
+			}
+		}
+		for(Voto v: daCanc) {
+			voti.remove(v);
+		}
 	}
+
+	
 	public Libretto librettoOrdinatoAlfabeticamente() {
 		Libretto ordinato = new Libretto();
 		ordinato.voti = new ArrayList<>(this.voti);
